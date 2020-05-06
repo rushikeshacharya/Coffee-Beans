@@ -78,7 +78,7 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
 
     // Define a modifer that verifies the Caller
     modifier verifyCaller(address _address) {
-        require(msg.sender == _address);
+        require(msg.sender == _address, 'VerifyCaller modifier failed');
         _;
     }
 
@@ -93,7 +93,8 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
         _;
         uint256 _price = items[_upc].productPrice;
         uint256 amountToReturn = msg.value - _price;
-        items[_upc].consumerID.transfer(amountToReturn);
+        address payable consumer = address(uint160(uint256(items[_upc].consumerID)));
+        consumer.transfer(amountToReturn);
     }
 
     // Define a modifier that checks if an item.state of a upc is Harvested
@@ -156,7 +157,7 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
     // Define a function 'kill' if required
     function kill() public {
         if (msg.sender == ownerAddress) {
-            selfdestruct(ownerAddress);
+            selfdestruct(msg.sender);
         }
     }
 
@@ -181,7 +182,7 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
         items[_upc].originFarmLongitude = _originFarmLongitude;
         items[_upc].productNotes = _productNotes;
         items[_upc].productID = _upc + sku;
-        items[_upc].itemState = State.harvested;
+        items[_upc].itemState = State.Harvested;
         // Increment sku
         sku = sku + 1;
         // Emit the appropriate event
@@ -196,7 +197,7 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
     // Call modifier to verify caller of this function
         verifyCaller(items[_upc].ownerID)
     {
-        items[_upc].itemState = State.processed;
+        items[_upc].itemState = State.Processed;
         // Update the appropriate fields
         emit Processed(_upc);
         // Emit the appropriate event
@@ -222,7 +223,7 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
     // Call modifier to check if upc has passed previous supply chain stage
         packed(_upc)
     // Call modifier to verify caller of this function
-        verifyCaller(_upc)
+        verifyCaller(items[_upc].ownerID)
     {
         items[_upc].itemState = State.ForSale;
         items[_upc].productPrice = _price;
@@ -250,7 +251,9 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
         items[_upc].distributorID = msg.sender;
         items[_upc].itemState = State.Sold;
         // Transfer money to farmer
-        items[_upc].originFarmerID.transfer(items[_upc].productPrice);
+        // address(uint160(uint256(b)))
+        address payable farmer = address(uint160(uint256(items[_upc].originFarmerID)));
+       farmer.transfer(items[_upc].productPrice);
         // emit the appropriate event
         emit Sold(_upc);
     }
@@ -351,7 +354,7 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
             uint256 productID,
             string memory productNotes,
             uint256 productPrice,
-            uint256 itemState,
+            State itemState,
             address distributorID,
             address retailerID,
             address consumerID
