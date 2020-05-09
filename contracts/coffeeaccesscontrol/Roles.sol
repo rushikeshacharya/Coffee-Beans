@@ -14,7 +14,7 @@ library Roles {
    */
   function add(Role storage role, address account) internal {
     require(account != address(0), 'Account address should not be Zero address');
-    require(!has(role, account), 'Account already have role access.');
+    require(!has(role, account), 'Account already have the role access.');
 
     role.bearer[account] = true;
   }
