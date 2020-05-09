@@ -1,5 +1,5 @@
 const HDWalletProvider = require('truffle-hdwallet-provider');
-const infuraKey = "";
+const infuraKey = "f993a3a12e3748eab5a263c8a13e1bc0";
 
 const fs = require('fs');
 const mnemonic = fs.readFileSync(".secret").toString().trim();
@@ -20,5 +20,10 @@ module.exports = {
       networkCheckTimeout: 100000
     },
   },
-  plugins: ["solidity-coverage"]
+  plugins: ["solidity-coverage"],
+  compilers: {
+    solc: {
+      version: "0.5.16",    // Fetch exact version from solc-bin (default: truffle's version)
+    }
+  }
 };
