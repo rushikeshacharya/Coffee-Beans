@@ -72,6 +72,10 @@ truffle coverage
 - [State Diagram](https://github.com/rushikeshacharya/Coffee-Beans/blob/master/docs/State.png)
 - [Class Diagram](https://github.com/rushikeshacharya/Coffee-Beans/blob/master/docs/Class.png)
 
+---
+
+- [Code coverage report](https://github.com/rushikeshacharya/Coffee-Beans/blob/master/docs/Code-coverage.png)
+
 ### Rinkeby Testnet Deployment
 
 **SupplyChain Contract Address:** [0xb8a125237ba0c8c870775375dd317a18a2b78f0d](https://rinkeby.etherscan.io/address/0xb8a125237ba0c8c870775375dd317a18a2b78f0d)
